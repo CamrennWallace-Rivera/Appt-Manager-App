@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Scheduler</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Appointment Manager</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h3>Schedule an Appointment</h3>
-        <form>
-            <input type="text" id="name" placeholder="Enter Name">
-            <input type="text" id="day" placeholder="Enter Day">
-            <input type="text" id="time" placeholder="Enter Time">
-        </form>
-        <button id="schedule">Schedule Appointment</button>
-        <button id="cancel">Cancel Appointment</button>
-        <button id="list">List Available Appointments</button>
+  <div class="container">
+    <div class="appointment-form">
+      <h1>Weekly Appointment Manager</h1>
+      <input type="text" id="name" placeholder="Enter Name">
+      <input type="text" id="day" placeholder="Enter Day">
+      <input type="text" id="time" placeholder="Enter Time">
 
-        <div id="results"></div>
+      <button id="schedule" class="bubble-button">Schedule Appointment</button>
+      <button id="cancel" class="bubble-button">Cancel Appointment</button>
+      <button id="list" class="bubble-button">List Available Appointments</button>
+
+      <div id="results"></div>
     </div>
 
-    <script src="client.js"></script>
+    <!-- Container for showing available times -->
+    <div id="availableTimes"></div>
+  </div>
+
+  <script src="client.js"></script>
 </body>
 </html>
-

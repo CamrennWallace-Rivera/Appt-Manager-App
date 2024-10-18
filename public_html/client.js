@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const day = document.getElementById('day').value;
         const time = document.getElementById('time').value;
 
-        // Validate input fields before making the request
+        // Validate input
         if (name === '' || day === '' || time === '') {
             document.getElementById('results').innerText = 'Please fill in all fields.';
             return;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const day = document.getElementById('day').value;
         const time = document.getElementById('time').value;
 
-        // Validate input fields before making the request
+        // Validate input
         if (name === '' || day === '' || time === '') {
             document.getElementById('results').innerText = 'Please fill in all fields.';
             return;
@@ -55,25 +55,22 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send();
     });
 
-    // Handle listing all available appointment times
+    // Handle listing all available appointments
     document.getElementById('list').addEventListener('click', function() {
-        // Create the AJAX request to list all available times
+        // Create the AJAX request to list all available appointments
         const xhr = new XMLHttpRequest();
         xhr.open('GET', '/listall', true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 const availableTimes = JSON.parse(xhr.responseText);
-                let output = '<h3>Available Appointment Times:</h3>';
-                for (const day in availableTimes) {
-                    if (availableTimes[day].length > 0) {
-                        output += `<h4>${day}</h4>`;
-                        availableTimes[day].forEach(function(time) {
-                            output += `<p>${time}</p>`;
-                        });
-                    } else {
-                        output += `<p>No available times for ${day}.</p>`;
-                    }
-                }
+                let output = '<h3>Available Times:</h3>';
+                Object.keys(availableTimes).forEach(function(day) {
+                    output += `<div class="day-block"><h4>${day}</h4>`;
+                    availableTimes[day].forEach(function(time) {
+                        output += `<span class="time-slot">${time}</span>`;
+                    });
+                    output += '</div>';
+                });
                 document.getElementById('results').innerHTML = output;
             } else {
                 document.getElementById('results').innerText = 'Error: Could not retrieve available times.';
@@ -85,4 +82,3 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send();
     });
 });
-
