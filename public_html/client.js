@@ -55,22 +55,18 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send();
     });
 
-    // Handle listing all available appointments
+    // Handle listing all appointments
     document.getElementById('list').addEventListener('click', function() {
-        // Create the AJAX request to list all available appointments
         const xhr = new XMLHttpRequest();
         xhr.open('GET', '/listall', true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 const availableTimes = JSON.parse(xhr.responseText);
                 let output = '<h3>Available Times:</h3>';
-                Object.keys(availableTimes).forEach(function(day) {
-                    output += `<div class="day-block"><h4>${day}</h4>`;
-                    availableTimes[day].forEach(function(time) {
-                        output += `<span class="time-slot">${time}</span>`;
-                    });
-                    output += '</div>';
-                });
+                for (const day in availableTimes) {
+                    output += `<h4>${day}</h4>`;
+                    output += `<p>${availableTimes[day].join(', ')}</p>`;  // Proper spacing for available times
+                }
                 document.getElementById('results').innerHTML = output;
             } else {
                 document.getElementById('results').innerText = 'Error: Could not retrieve available times.';
@@ -82,3 +78,4 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send();
     });
 });
+
