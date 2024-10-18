@@ -1,0 +1,9 @@
+Refrences:
+
+I did not collaborate with anyone while working on this assignment
+
+chatgpt.com
+https://www.w3schools.com/css/css3_button
+https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+https://nodejs.org/docs/latest/api/cli.html
+https://www.w3schools.com/jquery/jquery_ajax_load.asp
