@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Appointments</title>
-    </head>
-    <body>
-        <h1 style="text-align: center">Weekly Appointments Manager</h1>
-        <label style="padding-left:80px" for="name">Name:</label>
-        <input type="text" id="name" ><br><br>
-        <label style="padding-left:80px" for="date">Day:</label>
-        <input type="text" id="day" ><br><br>
-        <label style="padding-left:80px" for="time">Time:</label>
-        <input type="text" id="time" ><br><br>
-        <span style="padding-left:80px" ></span> 
-            <button id="schedule">Schedule</button> &nbsp;&nbsp;
-            <button id="cancel">Cancel</button> &nbsp;&nbsp;
-            <button id="list">List Available Apppointments</button> 
-        </span>   
-        <span id="results"></span>
-    
-    </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments</title>
+</head>
+<body>
+  <h1 style="text-align: center">Weekly Appointments Manager</h1>
+  <label style="padding-left:80px" for="name">Name:</label>
+  <input type="text" id="name"><br><br>
+
+  <label style="padding-left:80px" for="date">Day:</label>
+  <input type="text" id="day"><br><br>
+
+  <label style="padding-left:80px" for="time">Time:</label>
+  <input type="text" id="time"><br><br>
+
+  <span style="padding-left:80px">
+    <button id="schedule">Schedule</button>
+    <button id="cancel">Cancel</button>
+    <button id="list">List Available Appointments</button>
+  </span>
+
+  <br><br>
+
+  <span id="results"></span>
+
+  <script src="client.js"></script>
+</body>
 </html>
