@@ -1,8 +1,7 @@
 const http = require('http');
-const url = require('url');
 const fs = require('fs');
-
-console.log("Starting the server setup...");
+const url = require('url');
+const path = require('path');
 
 // Object of available appointment times
 const availableTimes = {
@@ -19,124 +18,112 @@ let appointments = [
   { name: "Lillie", day: "Friday", time: "1:00" }
 ];
 
-// Function to serve static files
-function serveStaticFile(res, filePath, contentType) {
-  console.log(`Serving file: ${filePath}`);
-  fs.readFile(filePath, (err, content) => {
+// Determine file content type based on extension
+function typeFunc(ext) {
+  switch (ext) {
+    case '.html': return 'text/html';
+    case '.js': return 'application/javascript';
+    case '.css': return 'text/css';
+    case '.txt': return 'text/plain';
+    case '.jpg': return 'image/jpeg';
+    case '.png': return 'image/png';
+    default: return 'application/octet-stream';
+  }
+}
+
+// Function to send a file
+function sendFile(filepath, res) {
+  fs.readFile(filepath, function(err, content) {
     if (err) {
-      console.log(`Error reading file: ${filePath}`);
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('File Not Found');
+      console.log(err);
+      res.writeHead(404);
+      res.end();
     } else {
-      res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content, 'utf-8');
+      const cType = typeFunc(path.extname(filepath));
+      res.writeHead(200, { 'Content-Type': cType });
+      res.write(content);
+      res.end();
     }
   });
 }
 
-console.log("Creating the server...");
+// Function to display all appointments
+function displayAllAppointments(res) {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.write(JSON.stringify(appointments));
+  res.end();
+}
 
-// Create the server
-const server = http.createServer((req, res) => {
-  console.log(`Received request for: ${req.url}`);
-  const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname;
-
-  // Serve static files
-  if (pathname === '/' || pathname === '/index.html') {
-    serveStaticFile(res, './public_html/index.html', 'text/html');
-  } else if (pathname === '/client.js') {
-    serveStaticFile(res, './public_html/client.js', 'application/javascript');
-  }
-  // Handle schedule appointment
-  else if (pathname === '/schedule') {
-    console.log("Handling /schedule request");
-    const { name, day, time } = parsedUrl.query;
+// Function to schedule an appointment
+function scheduleAppointment(res, query) {
+  if (!query || !query.name || !query.day || !query.time) {
+    res.writeHead(400, { "Content-Type": "text/plain" });
+    res.write("Invalid query string");
+    res.end();
+  } else {
+    let day = query.day;
+    let time = query.time;
     if (availableTimes[day] && availableTimes[day].includes(time)) {
-      appointments.push({ name, day, time });
+      appointments.push({ name: query.name, day: query.day, time: query.time });
       availableTimes[day] = availableTimes[day].filter(t => t !== time); // Remove booked time
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Appointment has been scheduled');
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.write("Appointment has been scheduled");
     } else {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Appointment not available');
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.write("Appointment not available");
     }
+    res.end();
   }
-  // Handle cancel appointment
-  else if (pathname === '/cancel') {
-    console.log("Handling /cancel request");
-    const { name, day, time } = parsedUrl.query;
-    const index = appointments.findIndex(appt => appt.name === name && appt.day === day && appt.time === time);
+}
+
+// Function to cancel an appointment
+function cancelAppointment(res, query) {
+  if (!query || !query.name || !query.day || !query.time) {
+    res.writeHead(400, { "Content-Type": "text/plain" });
+    res.write("Invalid query string");
+    res.end();
+  } else {
+    const index = appointments.findIndex(appt => appt.name === query.name && appt.day === query.day && appt.time === query.time);
     if (index !== -1) {
       appointments.splice(index, 1);
-      availableTimes[day].push(time); // Add back the time to available times
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Appointment has been canceled');
+      availableTimes[query.day].push(query.time); // Return time to availableTimes
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.write("Appointment has been canceled");
     } else {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Appointment not found');
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.write("Appointment not found");
     }
+    res.end();
   }
-  // Handle list all appointments
-  else if (pathname === '/listall') {
-    console.log("Handling /listall request");
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(appointments));
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('404 Not Found');
+}
+
+// Server callback function
+const myserver = http.createServer(function(req, res) {
+  const urlObj = url.parse(req.url, true);
+  const pathname = urlObj.pathname;
+  
+  console.log(pathname);
+
+  // Routing logic
+  switch (pathname) {
+    case "/listall":
+      displayAllAppointments(res);
+      break;
+    case "/schedule":
+      scheduleAppointment(res, urlObj.query);
+      break;
+    case "/cancel":
+      cancelAppointment(res, urlObj.query);
+      break;
+    // If not a recognized route, treat it as a file request
+    default:
+      sendFile("./public_html" + pathname, res);
+      break;
   }
 });
 
-console.log("Starting the server on port 3000...");
-
-// Start the server on port 3000
-//server.listen(3000, () => {
- // console.log('Server is running on http://localhost:3000');
-//});
-
-let send = function(path, res)
-{
-        fs.readFile(path, function(err, content)
-
-        {
-          if (err)
-          {
-            res.writeHead(400, {"Content-type":"text/plain"});
-            res.write("Error loading page! File/Filetype not found.");
-          }
-          else  // Status 200, all OK
-          {
-
-            res.writeHead(200, {"Content-type":"text/html"});
-
-            res.write(content);  // Write the page content
-
-          }
-
-          res.end();
-        });
-
-}
-let file = function (req, res)
-{
-
-        console.log(req.url);
-
-
-        let pathName = url.parse(req.url).pathname;  // For our path stuff
-        let fileName = "";
-
-        if (pathName === "/")
-        {
-          fileName = "public_html/index.html";
-        }
- send(sendfileName, res);
-
-}
-
-
-
-const myserver = http.createServer(file);  // server obj
-myserver.listen(80, function() {console.log("Listening on port 80")});
+// Start the server
+myserver.listen(80, () => {
+  console.log("Server is running on port 80");
+});
 
