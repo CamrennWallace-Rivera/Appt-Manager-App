@@ -131,7 +131,7 @@ let file = function (req, res)
         {
           fileName = "public_html/index.html";
         }
- send(sendfileName, res);
+ send(fileName, res);
 
 }
 
