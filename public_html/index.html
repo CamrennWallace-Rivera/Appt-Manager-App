@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Appointments</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduler</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1 style="text-align: center">Weekly Appointments Manager</h1>
-  <label style="padding-left:80px" for="name">Name:</label>
-  <input type="text" id="name"><br><br>
+    <div class="container">
+        <h3>Schedule an Appointment</h3>
+        <form>
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="text" id="day" placeholder="Enter Day">
+            <input type="text" id="time" placeholder="Enter Time">
+        </form>
+        <button id="schedule">Schedule Appointment</button>
+        <button id="cancel">Cancel Appointment</button>
+        <button id="list">List Available Appointments</button>
 
-  <label style="padding-left:80px" for="date">Day:</label>
-  <input type="text" id="day"><br><br>
+        <div id="results"></div>
+    </div>
 
-  <label style="padding-left:80px" for="time">Time:</label>
-  <input type="text" id="time"><br><br>
-
-  <span style="padding-left:80px">
-    <button id="schedule">Schedule</button>
-    <button id="cancel">Cancel</button>
-    <button id="list">List Available Appointments</button>
-  </span>
-
-  <br><br>
-
-  <span id="results"></span>
-
- <script src="public_html/client.js"></script>
-
+    <script src="client.js"></script>
 </body>
 </html>
+
